@@ -1,1 +1,0 @@
-# SmartElderlyCareSystem_fronted

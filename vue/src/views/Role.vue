@@ -71,7 +71,7 @@ const dialogFormVisible = ref(false)
 const rules = reactive({
   name: [
     { required: true, message: '请输入名称', trigger: 'blur' },
-  ],
+  ],E
   flag: [
     { required: true, message: '请输入唯一标识', trigger: 'blur' },
   ]

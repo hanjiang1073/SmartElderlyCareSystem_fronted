@@ -1,44 +1,33 @@
+// store.js
 import { defineStore } from 'pinia'
-import router, {setRoutes} from "@/router";
 
-export const useUserStore = defineStore('manager', {
+export const useUserStore = defineStore({
+    id: 'user',
     state: () => ({
-        managerInfo: {}
+        username: '',
+        email: '',
+        role: [],
+        jwt: '',
+        userId: ''
     }),
-    getters: {
-        getUserId() {
-            return this.managerInfo.user ? this.managerInfo.user.id : 0
-        },
-        getUser() {
-            return this.managerInfo.user || {}
-        },
-        getBearerToken() {
-            return this.managerInfo.token ? 'Bearer ' + this.managerInfo.token : ''
-        },
-        getToken() {
-            return this.managerInfo.token || ""
-        },
-        getMenus() {
-            return this.managerInfo.menus || []
-        },
-        getAuths() {
-            return this.managerInfo.auths.length ? this.managerInfo.auths.map(v => v.auth) : []
-        }
-    },
     actions: {
-        setManagerInfo(managerInfo) {
-            this.managerInfo = managerInfo
-            // 设置路由
-            setRoutes(managerInfo.menus)
-        },
         setUser(user) {
-            this.managerInfo.user = JSON.parse(JSON.stringify(user))
-        },
-        logout() {
-            localStorage.removeItem('manager')
-            router.push('/login')
+            this.username = user.username
+            this.email = user.email
+            this.role = user.role
+            this.jwt = user.jwt
+            this.userId = user.userId
         }
     },
-    // 开启数据持久化
-    persist: true
+    getters: {
+        getUser() {
+            return {
+                username: this.username,
+                email: this.email,
+                role: this.role,
+                jwt: this.jwt,
+                userId: this.userId
+            }
+        }
+    }
 })

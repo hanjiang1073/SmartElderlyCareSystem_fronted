@@ -4,9 +4,11 @@ import router from "@/router";
 import {useUserStore} from "@/stores/user";
 import request from "@/utils/request";
 import {ElMessage} from "element-plus";
+import Person from "@/views/Person.vue";
+
 const userStore = useUserStore()
 let user = userStore.getUser
-const activePath = router.currentRoute.value.path.replace('/', '')
+// const activePath = router.currentRoute.value.path.replace('/', '')
 
 const logout = () => {
   request.get('/logout/' + user.uid).then(res => {
@@ -17,7 +19,7 @@ const logout = () => {
     }
   })
 }
-const menus = userStore.getMenus
+// const menus = userStore.getMenus
 
 const getAvatarHandler = (avatar) => {
   user.avatar = avatar
@@ -56,42 +58,47 @@ const getAvatarHandler = (avatar) => {
     <div style="display: flex">
       <div style="width: 200px; min-height: calc(100vh - 60px); border-right: 1px solid #ccc">
         <el-menu
-            :default-active="activePath"
-            :default-openeds="menus.map(v => v.id + '')"
             class="el-menu-demo"
             style="border: none"
-            router
         >
-        <div v-for="item in menus" :key="item.id">
-          <div v-if="item.type === 2">
-            <el-menu-item :index="item.path" v-if="!item.hide">
-              <el-icon v-if="item.icon">
-                <component :is="item.icon"></component>
-              </el-icon>
-              <span>{{ item.name }}</span>
+          <el-menu-item index="/">
+            <el-icon><house /></el-icon>
+            <span>首页</span>
+          </el-menu-item>
+          <el-menu-item index="2" @click="router.push('/dashboard')">
+            <el-icon><PieChart /></el-icon>
+            <span>数据图表</span>
+          </el-menu-item>
+          <el-menu-item index="3" @click="router.push('/elderInfo')">
+            <el-icon><document /></el-icon>
+            <span>老年人信息管理</span>
+          </el-menu-item>
+          <el-menu-item index="4" @click="router.push('/volunteerInfo')">
+            <el-icon><document /></el-icon>
+            <span>义工信息管理</span>
+          </el-menu-item>
+          <el-menu-item index="5" @click="router.push('/staffInfo')">
+            <el-icon><document /></el-icon>
+            <span>工作人员信息管理</span>
+          </el-menu-item>
+          <el-submenu index="6">
+            <template #title>
+              <el-icon><Monitor /></el-icon>
+              <span>系统管理</span>
+            </template>
+            <el-menu-item index="6-1">
+              <span>情感分析</span>
             </el-menu-item>
-          </div>
-          <div v-else>
-            <el-sub-menu :index="item.id + ''" v-if="!item.hide">
-              <template #title>
-                <el-icon v-if="item.icon">
-                  <component :is="item.icon"></component>
-                </el-icon>
-                <span>{{ item.name }}</span>
-              </template>
-              <div  v-for="subItem in item.children" :key="subItem.id">
-                <el-menu-item :index="subItem.path" v-if="!subItem.hide">
-                  <template #title>
-                    <el-icon v-if="subItem.icon">
-                      <component :is="subItem.icon"></component>
-                    </el-icon>
-                    <span>{{ subItem.name }}</span>
-                  </template>
-                </el-menu-item>
-              </div>
-            </el-sub-menu>
-          </div>
-        </div>
+            <el-menu-item index="6-2">
+              <span>摔倒检测</span>
+            </el-menu-item>
+            <el-menu-item index="6-3">
+              <span>闯入检测</span>
+            </el-menu-item>
+            <el-menu-item index="6-4">
+              <span>义工互动</span>
+            </el-menu-item>
+          </el-submenu>
         </el-menu>
       </div>
 

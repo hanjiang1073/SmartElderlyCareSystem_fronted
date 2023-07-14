@@ -47,12 +47,12 @@ import router from "@/router";
 
 <template>
   <div style="height: 100vh; overflow: hidden; background-color: aliceblue">
-    <div style="width: 100%; background-color: rgba(65, 105, 225,.1);padding: 15px 30px; color: dodgerblue; font-size: 20px; position: absolute">后台管理系统</div>
-    <div style="display: flex; width: 50%; margin: 120px auto; background-color: white;
+    <div style="width: 100%; background-color: rgba(65, 105, 225,.1);padding: 15px 30px; color: dodgerblue; font-size: 20px; position: absolute">智慧养老系统</div>
+    <div style="display: flex; width: 28%; margin: 120px auto; background-color: white;
       box-shadow: 0 0 10px -2px rgba(65, 105, 225,.5); overflow: hidden; border-radius: 10px">
-      <div style="padding:30px">
-        <img src="../assets/bg1.png" alt="" style="width: 100%; margin-top: 100px">
-      </div>
+<!--      <div style="padding:30px">-->
+<!--        <img src="../assets/bg1.png" alt="" style="width: 100%; margin-top: 100px">-->
+<!--      </div>-->
       <div>
         <div style="width: 400px; background-color: white; padding: 30px 40px;">
           <el-form

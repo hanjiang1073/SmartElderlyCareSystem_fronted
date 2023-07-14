@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="FLOW" />
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
@@ -14,4 +17,14 @@
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+  <component name="net.techminded.npmania.NpmaniaSettingsState">
+    <option name="actions">
+      <map>
+        <entry key="npm run-script lint" value="npm run-script lint" />
+        <entry key="npm run-script prepare" value="npm run-script prepare" />
+        <entry key="npm run-script prettier" value="npm run-script prettier" />
+        <entry key="npm run-script test" value="npm run-script test" />
+      </map>
+    </option>
+  </component>
 </project>

@@ -6,60 +6,100 @@ import config from "../../config";
 import {useUserStore} from "@/stores/user";
 
 
-const name = ref('')
-const pageNum = ref(1)
-const pageSize = ref(5)
-const total = ref(0)
+const elderid = ref('')
+// const pageNum = ref(1)
+// const pageSize = ref(5)
+// const total = ref(0)
 
 const userStore = useUserStore()
-const token = userStore.getBearerToken
-const auths =  userStore.getAuths
+const jwt = userStore.jwt
 
 const state = reactive({
   tableData: [],
   form: {}
 })
+state.form.idOld = true;
 
 const valueHtml = ref('')  // 富文本内容
 
 
 
-const multipleSelection = ref([])
+// const multipleSelection = ref([])
 
 // 批量删除
-const handleSelectionChange = (val) => {
-  multipleSelection.value = val
-}
+// const handleSelectionChange = (val) => {
+//   multipleSelection.value = val
+// }
 
-const confirmDelBatch = () => {
-  if (!multipleSelection.value || !multipleSelection.value.length) {
-    ElMessage.warning("请选择数据")
-    return
-  }
-  const idArr = multipleSelection.value.map(v => v.id)
-  request.post('/elder/del/batch', idArr).then(res => {
-    if (res.code === '200') {
-      ElMessage.success('操作成功')
-      load()  // 刷新表格数据
+
+const SseEmitter = {
+  source: null,
+  message: ref("建立连接..."),
+  imgSrc: ref(""),
+
+  closeSse() {
+    this.source.close();
+    const httpRequest = new XMLHttpRequest();
+    const userId = new Date().getTime();
+    httpRequest.open(
+        "GET",
+        "http://localhost:8080/sse/close/" + userId,
+        true
+    );
+    httpRequest.send();
+    console.log("close");
+  },
+
+  handleSse(res) {
+    if (res.code === "200") {
+      this.source = new EventSource(res.data);
+      this.source.addEventListener(
+          "message",
+          (e) => {
+            this.imgSrc.value = "data:image/png;base64," + e.data;
+          },
+          false
+      );
+      this.source.addEventListener(
+          "error",
+          (e) => {
+            console.log(e);
+          },
+          false
+      );
+      this.message.value = "请求成功";
     } else {
-      ElMessage.error(res.msg)
+      ElMessage.error(res.msg);
     }
-  })
-}
+  },
+};
 
 const load = () => {
-  request.get('/elder/page', {
-    params: {
-      name: name.value,
-      pageNum: pageNum.value,
-      pageSize: pageSize.value
-    }
-  }).then(res => {
-    state.tableData = res.data.records
-    total.value = res.data.total
+  request.get('/elder').then(res => {
+    state.tableData = res.data
   })
 }
-load()  // 调用 load方法拿到后台数据
+load()
+
+// 保存
+const save = () => {
+  ruleFormRef.value.validate(valid => {
+    if (valid) {
+      state.form.content = valueHtml.value;
+      request.request({
+        url: '/connect3',
+        method: 'post',
+        data: JSON.stringify(state.form)
+      }).then(res => {
+        if(res.code == '200'){
+          ElMessage.success("保存成功")
+        }else{
+          ElMessage.error("保存失败")
+        }
+      })
+    }
+  })
+}
 
 const reset = () => {
   name.value = ''
@@ -69,11 +109,15 @@ const reset = () => {
 const dialogFormVisible = ref(false)
 
 const rules = reactive({
+  elderid: [
+    { required: true, message: '请输入id', trigger: 'blur' },
+  ],
   name: [
     { required: true, message: '请输入名称', trigger: 'blur' },
   ]
 })
 const ruleFormRef = ref()
+
 
 // 新增
 const handleAdd = () => {
@@ -85,27 +129,7 @@ const handleAdd = () => {
   })
 }
 
-// 保存
-const save = () => {
-  ruleFormRef.value.validate(valid => {   // valid就是校验的结果
-    if (valid) {
-      state.form.content = valueHtml.value  // 富文本保存内容
-      request.request({
-        url: '/elder',
-        method: state.form.id ? 'put' : 'post',
-        data: state.form
-      }).then(res => {
-        if (res.code === '200') {
-          ElMessage.success('保存成功')
-          dialogFormVisible.value = false
-          load()  // 刷新表格数据
-        } else {
-          ElMessage.error(res.msg)
-        }
-      })
-    }
-  })
-}
+
 
 // 编辑
 const handleEdit = (raw) => {
@@ -129,32 +153,12 @@ const del = (id) => {
   })
 }
 
-// 导出接口
-const exportData = () => {
-  window.open(`http://${config.serverUrl}/elder/export`)
-}
-
-
-const handleImportSuccess = () => {
-  // 刷新表格
-  load()
-  ElMessage.success("导入成功")
-}
-
-const handleFileUploadSuccess = (res) => {
-  state.form.file = res.data
-  ElMessage.success('上传成功')
-}
-const handleImgUploadSuccess = (res) => {
-  state.form.img = res.data
-  ElMessage.success('上传成功')
-}
 </script>
 
 <template>
   <div>
     <div>
-      <el-input v-model="name" placeholder="请输入名称" class="w300" />
+      <el-input v-model="elderid" placeholder="请输入id" class="w300" />
       <el-button type="primary" class="ml5" @click="load">
         <el-icon style="vertical-align: middle">
           <Search />
@@ -169,58 +173,26 @@ const handleImgUploadSuccess = (res) => {
     </div>
 
     <div style="margin: 10px 0">
-      <el-button type="success" @click="handleAdd" v-if="auths.includes('elder.add')">
+      <el-button type="success" @click="handleAdd" >
         <el-icon style="vertical-align: middle">
           <Plus />
         </el-icon>  <span style="vertical-align: middle"> 新增 </span>
       </el-button>
-      <!--
-      <el-upload
-          v-if="auths.includes('elder.import')"
-          class="ml5"
-          :show-file-list="false"
-          style="display: inline-block; position: relative; top: 3px"
-          :action='`http://${config.serverUrl}/elder/import`'
-          :on-success="handleImportSuccess"
-          :headers="{ Authorization: token}"
-      >
-        <el-button type="primary">
-          <el-icon style="vertical-align: middle">
-            <Bottom />
-          </el-icon>  <span style="vertical-align: middle"> 导入 </span>
-        </el-button>
-      </el-upload>
-      <el-button type="primary" @click="exportData" class="ml5" v-if="auths.includes('elder.export')">
-        <el-icon style="vertical-align: middle">
-          <Top />
-        </el-icon>  <span style="vertical-align: middle"> 导出 </span>
-      </el-button>
-      -->
-      <el-popconfirm title="您确定删除吗？" @confirm="confirmDelBatch" v-if="auths.includes('elder.deleteBatch')">
-        <template #reference>
-          <el-button type="danger" style="margin-left: 5px">
-            <el-icon style="vertical-align: middle">
-              <Remove />
-            </el-icon>  <span style="vertical-align: middle"> 批量删除 </span>
-          </el-button>
-        </template>
-      </el-popconfirm>
     </div>
 
     <div style="margin: 10px 0">
       <el-table :data="state.tableData" stripe border  @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" />
-      <el-table-column prop="id" label="编号"></el-table-column>
+      <el-table-column prop="elderid" label="老人id"></el-table-column>
       <el-table-column prop="name" label="姓名"></el-table-column>
-      <el-table-column prop="identification" label="身份证"></el-table-column>
-      <el-table-column label="图片"><template #default="scope"><el-image preview-teleported style="width: 80px; height: 80px" :src="scope.row.img" :preview-src-list="[scope.row.img]"></el-image></template></el-table-column>
-      <el-table-column prop="sexRadio" label="性别"></el-table-column>
-      <el-table-column prop="remark" label="备注"></el-table-column>
+      <el-table-column prop="age" label="年龄"></el-table-column>
+      <el-table-column prop="description" label="简介"></el-table-column>
+      <el-table-column prop="phone" label="联系方式"></el-table-column>
 
         <el-table-column label="操作" width="180">
           <template #default="scope">
-            <el-button type="primary" @click="handleEdit(scope.row)" v-if="auths.includes('elder.edit')">编辑</el-button>
-            <el-popconfirm title="您确定删除吗？" @confirm="del(scope.row.id)" v-if="auths.includes('elder.delete')">
+            <el-button type="primary" @click="handleEdit(scope.row)" >编辑</el-button>
+            <el-popconfirm title="您确定删除吗？" @confirm="del(scope.row.id)">
               <template #reference>
                 <el-button type="danger">删除</el-button>
               </template>
@@ -232,37 +204,24 @@ const handleImgUploadSuccess = (res) => {
 
     <div style="margin: 10px 0">
       <el-pagination
-          @current-change="load"
-          @size-change="load"
-          v-model:current-page="pageNum"
-          v-model:page-size="pageSize"
           background
-          :page-sizes="[2, 5, 10, 20]"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
+          layout=" sizes, prev, pager, next, jumper"
       />
     </div>
 
-    <el-dialog v-model="dialogFormVisible" title="老年人信息信息" width="40%">
+    <el-dialog v-model="dialogFormVisible" title="老人信息" width="40%">
       <el-form ref="ruleFormRef" :rules="rules" :model="state.form" label-width="80px" style="padding: 0 20px" status-icon>
         <el-form-item prop="name" label="姓名">
           <el-input v-model="state.form.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item prop="identification" label="身份证">
-          <el-input v-model="state.form.identification" autocomplete="off"></el-input>
+        <el-form-item prop="age" label="年龄">
+          <el-input v-model="state.form.age" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item prop="img" label="图片">
-          <el-upload :show-file-list="false" :action="`http://${config.serverUrl}/file/upload`" ref="file" :headers="{ Authorization: token}" :on-success="handleImgUploadSuccess">
-            <el-button size="small" type="primary">点击上传</el-button>
-          </el-upload>
+        <el-form-item prop="description" label="介绍">
+          <el-input v-model="state.form.description" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item prop="sexRadio" label="性别">
-          <el-radio-group v-model="state.form.sexRadio">
-            <el-radio label="男">男</el-radio>
-            <el-radio label="女">女</el-radio>
-          </el-radio-group>        </el-form-item>
-        <el-form-item prop="remark" label="备注">
-          <el-input v-model="state.form.remark" autocomplete="off"></el-input>
+        <el-form-item prop="phone" label="联系方式">
+          <el-input v-model="state.form.phone" autocomplete="off"></el-input>
         </el-form-item>
 
       </el-form>

@@ -32,50 +32,8 @@ const valueHtml = ref('')  // 富文本内容
 // }
 
 
-const SseEmitter = {
-  source: null,
-  message: ref("建立连接..."),
-  imgSrc: ref(""),
-
-  closeSse() {
-    this.source.close();
-    const httpRequest = new XMLHttpRequest();
-    const userId = new Date().getTime();
-    httpRequest.open(
-        "GET",
-        "http://localhost:8080/sse/close/" + userId,
-        true
-    );
-    httpRequest.send();
-    console.log("close");
-  },
-
-  handleSse(res) {
-    if (res.code === "200") {
-      this.source = new EventSource(res.data);
-      this.source.addEventListener(
-          "message",
-          (e) => {
-            this.imgSrc.value = "data:image/png;base64," + e.data;
-          },
-          false
-      );
-      this.source.addEventListener(
-          "error",
-          (e) => {
-            console.log(e);
-          },
-          false
-      );
-      this.message.value = "请求成功";
-    } else {
-      ElMessage.error(res.msg);
-    }
-  },
-};
-
 const load = () => {
-  request.get('/elder').then(res => {
+  request.get('http://localhost:8080/elder').then(res => {
     state.tableData = res.data
   })
 }
@@ -87,12 +45,16 @@ const save = () => {
     if (valid) {
       state.form.content = valueHtml.value;
       request.request({
-        url: '/connect3',
+        url: 'http://localhost:8080/connect3',
         method: 'post',
         data: JSON.stringify(state.form)
       }).then(res => {
         if(res.code == '200'){
           ElMessage.success("保存成功")
+          dialogFormVisible.value = false
+          load()  // 刷新表格数据
+          //跳转到老人人脸录入的页面
+          router.push('/featureEntry')
         }else{
           ElMessage.error("保存失败")
         }
@@ -109,9 +71,6 @@ const reset = () => {
 const dialogFormVisible = ref(false)
 
 const rules = reactive({
-  elderid: [
-    { required: true, message: '请输入id', trigger: 'blur' },
-  ],
   name: [
     { required: true, message: '请输入名称', trigger: 'blur' },
   ]
@@ -143,7 +102,7 @@ const handleEdit = (raw) => {
 
 // 删除
 const del = (id) => {
-  request.delete('/elder/' + id).then(res => {
+  request.delete('http://localhost:8080/elder/' + id).then(res => {
     if (res.code === '200') {
       ElMessage.success('操作成功')
       load()  // 刷新表格数据
@@ -181,7 +140,7 @@ const del = (id) => {
     </div>
 
     <div style="margin: 10px 0">
-      <el-table :data="state.tableData" stripe border  @selection-change="handleSelectionChange">
+      <el-table :data="state.tableData" stripe border>
         <el-table-column type="selection" width="55" />
       <el-table-column prop="elderid" label="老人id"></el-table-column>
       <el-table-column prop="name" label="姓名"></el-table-column>

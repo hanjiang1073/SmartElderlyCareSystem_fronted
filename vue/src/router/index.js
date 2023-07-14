@@ -19,21 +19,27 @@ const router = createRouter({
         { path: 'staffInfo', name: 'StaffInfo', component: () => import('../views/Event.vue') },
         { path: 'tracking', name: 'Tracking', component: () => import('../views/Tracking.vue') },
         { path: 'seeEmitter', name: 'SeeEmitter', component: () => import('../views/SeeEmitter.vue') },
+        { path: 'featureEntry', name: 'FeatureEntry', component: () => import('../views/sse/FeatureEntry.vue') },
+        { path: 'faceRecognition', name: 'FaceRecognition', component: () => import('../views/sse/FaceRecognition.vue') },
+        { path: 'emotionDetection', name: 'EmotionDetection', component: () => import('../views/sse/EmotionDetection.vue') },
+        { path: 'exclusionZoneDetection', name: 'ExclusionZoneDetection', component: () => import('../views/sse/ExclusionZoneDetection.vue') },
+        { path: 'fallDetection', name: 'FallDetection', component: () => import('../views/sse/FallDetection.vue') },
+        { path: 'interactionDetection', name: 'InteractionDetection', component: () => import('../views/sse/InteractionDetection.vue') },
       ]
     },
     // 前台页面路由
-    {
-      path: '/front',
-      name: 'Front',
-      redirect: '/front/home',
-      component: () => import('../layout/Front.vue'),
-      children: [
-        { path: 'home', name: 'FrontHome', component: () => import('../views/front/Home.vue') },
-        { path: 'person', name: 'FrontPerson', component: () => import('../views/front/Person.vue') },
-        { path: 'password', name: 'FrontPassword', component: () => import('../views/front/Password.vue') },
-        { path: 'dashboard', name: 'FrontDashboard', component: () => import('../views/Dashboard.vue') },
-      ]
-    },
+    // {
+    //   path: '/front',
+    //   name: 'Front',
+    //   redirect: '/front/home',
+    //   component: () => import('../layout/Front.vue'),
+    //   children: [
+    //     { path: 'home', name: 'FrontHome', component: () => import('../views/front/Home.vue') },
+    //     { path: 'person', name: 'FrontPerson', component: () => import('../views/front/Person.vue') },
+    //     { path: 'password', name: 'FrontPassword', component: () => import('../views/front/Password.vue') },
+    //     { path: 'dashboard', name: 'FrontDashboard', component: () => import('../views/Dashboard.vue') },
+    //   ]
+    // },
     {
       path: '/login',
       name: 'Login',

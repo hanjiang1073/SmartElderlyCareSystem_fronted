@@ -82,22 +82,27 @@ const getAvatarHandler = (avatar) => {
             <span>工作人员信息管理</span>
           </el-menu-item>
           <el-submenu index="6">
-            <template #title>
-              <el-icon><Monitor /></el-icon>
-              <span>系统管理</span>
-            </template>
-            <el-menu-item index="6-1">
+            <el-menu-item index="1-1" @click="router.push('/')">
+              <el-icon><document /></el-icon>
+              <span>陌生人识别</span>
+            </el-menu-item>
+            <el-menu-item index="1-2" @click="router.push('/')">
+              <el-icon><document /></el-icon>
               <span>情感分析</span>
             </el-menu-item>
-            <el-menu-item index="6-2">
-              <span>摔倒检测</span>
+            <el-menu-item index="1-3" @click="router.push('/')">
+              <el-icon><document /></el-icon>
+              <span>禁区检测</span>
             </el-menu-item>
-            <el-menu-item index="6-3">
-              <span>闯入检测</span>
+            <el-menu-item index="1-4" @click="router.push('/')">
+              <el-icon><document /></el-icon>
+              <span>跌倒检测</span>
             </el-menu-item>
-            <el-menu-item index="6-4">
-              <span>义工互动</span>
+            <el-menu-item index="1-5" @click="router.push('/')">
+              <el-icon><document /></el-icon>
+              <span>交互检测</span>
             </el-menu-item>
+
           </el-submenu>
         </el-menu>
       </div>

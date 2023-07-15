@@ -16,10 +16,14 @@
 <script>
 import '@/assets/tracking/build/tracking-min.js';
 import '@/assets/tracking/build/data/face-min.js';
+import axios from "axios";
+import router from "@/router";
 
 export default {
   data() {
     return {
+      id: null,
+      isOld: null,
       trackerTask: null,
       mediaStreamTrack: null,
       video: null,
@@ -33,6 +37,8 @@ export default {
   methods: {
     // 初始化设置
     init() {
+      this.id = this.$route.params.id
+      this.isOld = this.$route.params.isOld === 'true';
       this.video = this.mediaStreamTrack = document.getElementById('video');
       this.screenshotCanvas = document.getElementById('screenshotCanvas');
 
@@ -79,8 +85,19 @@ export default {
       let base64Img = canvas.toDataURL('image/jpeg');
 
       // 打印出 base64Img
+      console.log(this.id, this.isOld)
       console.log('base64Img:',base64Img)
 
+      axios.post('http://localhost:8080/connect4', {
+        id: this.id,
+        isOld: this.isOld,
+        img: base64Img,
+      }).then(response => {
+        console.log(response.data)
+        router.push('/elderInfo')
+      }).catch(error => {
+            console.error(error)
+          })
       // 请求接口成功以后打开锁
       // this.uploadLock = true;
     },

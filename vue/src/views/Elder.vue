@@ -4,6 +4,7 @@ import request from "@/utils/request";
 import {ElMessage} from "element-plus";
 import config from "../../config";
 import {useUserStore} from "@/stores/user";
+import router from "@/router";
 
 
 const elderid = ref('')
@@ -53,8 +54,10 @@ const save = () => {
           ElMessage.success("保存成功")
           dialogFormVisible.value = false
           load()  // 刷新表格数据
+          const id = res.data.id
           //跳转到老人人脸录入的页面
-          router.push('/featureEntry')
+          let isOld = true;
+          router.push({ name: 'Tracking', params: { id, isOld }})
         }else{
           ElMessage.error("保存失败")
         }
@@ -100,6 +103,18 @@ const handleEdit = (raw) => {
   })
 }
 
+//查询
+const search = (id) => {
+  request.post('http://localhost:8080/elder/' + id).then(res => {
+    if (res.code === '200') {
+      ElMessage.success('操作成功')
+      state.tableData = res.data
+    } else {
+      ElMessage.error(res.msg)
+    }
+  })
+}
+
 // 删除
 const del = (id) => {
   request.delete('http://localhost:8080/elder/' + id).then(res => {
@@ -118,7 +133,7 @@ const del = (id) => {
   <div>
     <div>
       <el-input v-model="elderid" placeholder="请输入id" class="w300" />
-      <el-button type="primary" class="ml5" @click="load">
+      <el-button type="primary" class="ml5" @click="search">
         <el-icon style="vertical-align: middle">
           <Search />
         </el-icon>  <span style="vertical-align: middle"> 搜索 </span>

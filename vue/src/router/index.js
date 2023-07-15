@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import {useUserStore} from "@/stores/user"
+
 const modules = import.meta.glob('../views/*.vue')
 
 const router = createRouter({
@@ -17,7 +17,8 @@ const router = createRouter({
         { path: 'elderInfo', name: 'ElderInfo', component: () => import('../views/Elder.vue') },
         { path: 'volunteerInfo', name: 'VolunteerInfo', component: () => import('../views/Volunteer.vue') },
         { path: 'staffInfo', name: 'StaffInfo', component: () => import('../views/Event.vue') },
-        { path: 'tracking', name: 'Tracking', component: () => import('../views/Tracking.vue') },
+        // { path: 'tracking', name: 'Tracking', component: () => import('../views/Tracking.vue') },
+        { path: 'tracking/:id/:isOld', name: 'Tracking', component: () => import('../views/Tracking.vue') },
         { path: 'seeEmitter', name: 'SeeEmitter', component: () => import('../views/SeeEmitter.vue') },
         { path: 'featureEntry', name: 'FeatureEntry', component: () => import('../views/sse/FeatureEntry.vue') },
         { path: 'faceRecognition', name: 'FaceRecognition', component: () => import('../views/sse/FaceRecognition.vue') },

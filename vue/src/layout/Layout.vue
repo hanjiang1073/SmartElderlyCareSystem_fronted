@@ -77,10 +77,10 @@ const getAvatarHandler = (avatar) => {
             <el-icon><document /></el-icon>
             <span>义工信息管理</span>
           </el-menu-item>
-<!--          <el-menu-item index="5" @click="router.push('/staffInfo')">-->
-<!--            <el-icon><document /></el-icon>-->
-<!--            <span>工作人员信息管理</span>-->
-<!--          </el-menu-item>-->
+          <el-menu-item index="5" @click="router.push('/event')">
+            <el-icon><document /></el-icon>
+            <span>事件统计</span>
+          </el-menu-item>
           <el-submenu index="6">
             <el-menu-item index="1-1" @click="router.push('/faceRecognition')">
               <el-icon><document /></el-icon>

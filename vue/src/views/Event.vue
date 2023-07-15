@@ -33,9 +33,20 @@ const reset = () => {
   load()
 }
 
+const search = (id) => {
+  request.post('http://localhost:8080/event/' + id).then(res => {
+    if (res.code === '200') {
+      ElMessage.success('操作成功')
+      state.tableData = res.data
+    } else {
+      ElMessage.error(res.msg)
+    }
+  })
+}
+
 // 删除
 const del = (id) => {
-  request.delete('/elder/' + id).then(res => {
+  request.delete('/event/' + id).then(res => {
     if (res.code === '200') {
       ElMessage.success('操作成功')
       load()  // 刷新表格数据
@@ -51,7 +62,7 @@ const del = (id) => {
   <div>
     <div>
       <el-input v-model="eventid" placeholder="请输入id" class="w300" />
-      <el-button type="primary" class="ml5" @click="load">
+      <el-button type="primary" class="ml5" @click="search">
         <el-icon style="vertical-align: middle">
           <Search />
         </el-icon>  <span style="vertical-align: middle"> 搜索 </span>
@@ -73,8 +84,7 @@ const del = (id) => {
 <!--    </div>-->
 
     <div style="margin: 10px 0">
-      <el-table :data="state.tableData" stripe border  @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" />
+      <el-table :data="state.tableData" stripe border>
         <el-table-column prop="eventid" label="事件id"></el-table-column>
         <el-table-column prop="type" label="类型"></el-table-column>
         <el-table-column prop="desc" label="介绍"></el-table-column>

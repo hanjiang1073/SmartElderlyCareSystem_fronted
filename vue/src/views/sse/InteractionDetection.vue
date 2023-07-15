@@ -18,11 +18,11 @@ export default {
   },
   mounted() {
     const userId = new Date().getTime();
-    const id = /* session.Id */ 0;
+    const type = /* session.Id */ 1;
 
     if (!!window.EventSource) {
       this.source = new EventSource(
-          "http://localhost:8080/sse/connect/" + userId + "/" + id
+          "http://localhost:8080/sse/connect/" + userId + "/" + type
       );
       this.source.addEventListener("message", (e) => {
         this.imgSrc = "data:image/png;base64," + e.data;

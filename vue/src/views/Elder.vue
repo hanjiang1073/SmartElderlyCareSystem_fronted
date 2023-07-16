@@ -14,6 +14,11 @@ const elderid = ref('')
 
 const userStore = useUserStore()
 const jwt = userStore.jwt
+const OperationType = {
+  ADD: 'add',
+  UPDATE: 'update',
+};
+let type = null;
 
 const state = reactive({
   tableData: [],

@@ -65,41 +65,41 @@ const getAvatarHandler = (avatar) => {
             <el-icon><house /></el-icon>
             <span>首页</span>
           </el-menu-item>
-          <el-menu-item index="2" @click="router.push('/dashboard')">
-            <el-icon><PieChart /></el-icon>
-            <span>数据图表</span>
-          </el-menu-item>
+<!--          <el-menu-item index="2" @click="router.push('/dashboard')">-->
+<!--            <el-icon><PieChart /></el-icon>-->
+<!--            <span>数据图表</span>-->
+<!--          </el-menu-item>-->
           <el-menu-item index="3" @click="router.push('/elderInfo')">
-            <el-icon><document /></el-icon>
+            <el-icon><Avatar /></el-icon>
             <span>老年人信息管理</span>
           </el-menu-item>
           <el-menu-item index="4" @click="router.push('/volunteerInfo')">
-            <el-icon><document /></el-icon>
+            <el-icon><UserFilled /></el-icon>
             <span>义工信息管理</span>
           </el-menu-item>
           <el-menu-item index="5" @click="router.push('/event')">
-            <el-icon><document /></el-icon>
+            <el-icon><PieChart /></el-icon>
             <span>事件统计</span>
           </el-menu-item>
           <el-submenu index="6">
             <el-menu-item index="1-1" @click="router.push('/faceRecognition')">
-              <el-icon><document /></el-icon>
-              <span>陌生人识别</span>
+              <el-icon><Monitor /></el-icon>
+              <span>人脸识别</span>
             </el-menu-item>
             <el-menu-item index="1-2" @click="router.push('/emotionDetection')">
-              <el-icon><document /></el-icon>
+              <el-icon><VideoCamera /></el-icon>
               <span>情感分析</span>
             </el-menu-item>
             <el-menu-item index="1-3" @click="router.push('/exclusionZoneDetection')">
-              <el-icon><document /></el-icon>
+              <el-icon><Camera /></el-icon>
               <span>禁区检测</span>
             </el-menu-item>
             <el-menu-item index="1-4" @click="router.push('/fallDetection')">
-              <el-icon><document /></el-icon>
+              <el-icon><VideoCamera /></el-icon>
               <span>跌倒检测</span>
             </el-menu-item>
             <el-menu-item index="1-5" @click="router.push('/interactionDetection')">
-              <el-icon><document /></el-icon>
+              <el-icon><Document /></el-icon>
               <span>交互检测</span>
             </el-menu-item>
 

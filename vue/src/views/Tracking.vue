@@ -1,16 +1,18 @@
 <template>
-  <div>
+  <div class="container">
+    <div>
       <div class="video-box">
-        <video id="video" width="320" height="240" preload autoplay loop muted></video>
-        <canvas id="canvas" width="320" height="240"></canvas>
+        <video id="video" width="800" height="600" preload autoplay loop muted></video>
+        <canvas id="canvas" width="800" height="600"></canvas>
       </div>
-      <canvas id="screenshotCanvas" width="320" height="240"></canvas>
+      <canvas id="screenshotCanvas" width="800" height="600"></canvas>
       <div class="switch-button">
         <el-row>
           <el-button type="primary" @click="destroyed">关闭摄像头</el-button>
           <el-button type="primary" @click="init">拍照</el-button>
         </el-row>
       </div>
+    </div>
   </div>
 </template>
 <script>
@@ -37,7 +39,7 @@ export default {
   methods: {
     // 初始化设置
     init() {
-      this.id = this.$route.params.id
+      this.id = parseInt(this.$route.params.id)7
       this.isOld = this.$route.params.isOld === 'true';
       this.video = this.mediaStreamTrack = document.getElementById('video');
       this.screenshotCanvas = document.getElementById('screenshotCanvas');
@@ -119,16 +121,26 @@ export default {
   display: none;
 }
 
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+}
+
 .video-box{
   position: relative;
   margin-left: 30px;
-  width: 320px;
-  height: 240px;
+  width: 800px;
+  height: 600px;
 }
 
 .switch-button{
   margin-top: 30px;
   margin-left: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 video,canvas{
   position: absolute;

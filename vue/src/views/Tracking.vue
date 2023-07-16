@@ -9,12 +9,13 @@
       <div class="switch-button">
         <el-row>
           <el-button type="primary" @click="destroyed">关闭摄像头</el-button>
-          <el-button type="primary" @click="init">拍照</el-button>
+          <el-button type="primary" @click="takePicture = true">拍照</el-button>
         </el-row>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import '@/assets/tracking/build/tracking-min.js';
 import '@/assets/tracking/build/data/face-min.js';
@@ -30,7 +31,7 @@ export default {
       mediaStreamTrack: null,
       video: null,
       screenshotCanvas: null,
-      uploadLock: true // 上传锁
+      takePicture: false // 是否拍照
     }
   },
   mounted() {
@@ -39,7 +40,7 @@ export default {
   methods: {
     // 初始化设置
     init() {
-      this.id = parseInt(this.$route.params.id);
+      this.id = parseInt(this.$route.params.id)
       this.isOld = this.$route.params.isOld === 'true';
       this.video = this.mediaStreamTrack = document.getElementById('video');
       this.screenshotCanvas = document.getElementById('screenshotCanvas');
@@ -52,7 +53,7 @@ export default {
       tracker.setInitialScale(4);
       tracker.setStepSize(2);
       tracker.setEdgesDensity(0.1);
-      //摄像头初始化
+      // 摄像头初始化
       this.trackerTask = window.tracking.track('#video', tracker, {
         camera: true
       });
@@ -67,17 +68,16 @@ export default {
           context.strokeRect(rect.x, rect.y, rect.width, rect.height);
         });
         // event.data.length长度为多少代表检测几张人脸
-        if(_this.uploadLock && event.data.length){
-          //上传图片
+        if(_this.takePicture && event.data.length){
+          // 拍照
+          _this.takePicture = false;
+          // 上传图片
           _this.screenshotAndUpload();
         }
       });
     },
     // 上传图片
     screenshotAndUpload() {
-      // 上锁避免重复发送请求
-      this.uploadLock = false;
-
       // 绘制当前帧图片转换为base64格式
       let canvas = this.screenshotCanvas;
       let video = this.video;
@@ -89,8 +89,7 @@ export default {
       // 打印出 base64Img
       console.log(this.id, this.isOld)
       console.log('base64Img:',base64Img)
-
-      axios.post('http://localhost:8080/sse/connect4', {
+      axios.post('http://localhost:8080/connect4', {
         id: this.id,
         isOld: this.isOld,
         img: base64Img,
@@ -98,21 +97,19 @@ export default {
         console.log(response.data)
         router.push('/elderInfo')
       }).catch(error => {
-            console.error(error)
-          })
-      // 请求接口成功以后打开锁
-      // this.uploadLock = true;
+        console.error(error)
+      })
     },
-    //关闭摄像头
-    destroyed(){
-      if(!this.mediaStreamTrack){
+    // 关闭摄像头
+    destroyed() {
+      if (!this.mediaStreamTrack) {
         return
       }
       this.mediaStreamTrack.srcObject.getTracks()[0].stop();
-      this.trackerTask.stop()
+      this.trackerTask.stop();
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -150,4 +147,3 @@ video,canvas{
 }
 
 </style>
-

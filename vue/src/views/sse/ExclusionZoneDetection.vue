@@ -1,8 +1,16 @@
 <template>
   <div>
     <el-button @click="closeSse">关闭连接</el-button>
-    <div>{{ message }}</div>
-    <img :src="imgSrc" />
+    <div class="my_text">
+      <div class="content">
+        <div>{{ message }}</div>
+        <div class="centered-text">禁区</div>
+      </div>
+    </div>
+
+    <div class="image-container">
+      <img :src="imgSrc" />
+    </div>
   </div>
 </template>
 
@@ -60,4 +68,21 @@ export default {
 
 <style>
 /* 样式可以根据需要添加 */
+.my_text {
+  display: flex;
+
+
+  height: 5vh; /* 设置容器高度为视窗高度 */
+}
+
+.content {
+  display: flex;
+  margin-top: 20px
+
+}
+
+.centered-text {
+  margin-left: 500px; /* 调整禁区与上方文字之间的间距 */
+  /* 其他样式属性 */
+}
 </style>

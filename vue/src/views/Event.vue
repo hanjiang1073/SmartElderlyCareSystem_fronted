@@ -34,10 +34,10 @@ const reset = () => {
 }
 
 const search = (id) => {
-  request.post('http://localhost:8080/event/' + id).then(res => {
+  request.post('http://localhost:8080/event).then(res => {
     if (res.code === '200') {
       ElMessage.success('操作成功')
-      state.tableData = res.data
+      state.tableData = res
     } else {
       ElMessage.error(res.msg)
     }

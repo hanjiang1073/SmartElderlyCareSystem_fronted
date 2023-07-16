@@ -39,7 +39,7 @@ export default {
   methods: {
     // 初始化设置
     init() {
-      this.id = parseInt(this.$route.params.id)7
+      this.id = parseInt(this.$route.params.id);
       this.isOld = this.$route.params.isOld === 'true';
       this.video = this.mediaStreamTrack = document.getElementById('video');
       this.screenshotCanvas = document.getElementById('screenshotCanvas');
@@ -90,7 +90,7 @@ export default {
       console.log(this.id, this.isOld)
       console.log('base64Img:',base64Img)
 
-      axios.post('http://localhost:8080/connect4', {
+      axios.post('http://localhost:8080/sse/connect4', {
         id: this.id,
         isOld: this.isOld,
         img: base64Img,

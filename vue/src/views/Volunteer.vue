@@ -94,7 +94,9 @@ const handleEdit = (raw) => {
 
 //查询
 const search = (id) => {
-  request.post('http://localhost:8080/volunteer/' + id).then(res => {
+  const ID = parseInt(volunteerid.value)
+  console.log(ID)
+  request.post('http://localhost:8080/volunteer/' + ID).then(res => {
     if (res.code === '200') {
       ElMessage.success('操作成功')
       state.tableData = res.data
@@ -106,7 +108,9 @@ const search = (id) => {
 
 // 删除
 const del = (id) => {
-  request.delete('http://localhost:8080/volunteer/' + id).then(res => {
+  const ID = parseInt(volunteerid.value)
+  console.log(ID)
+  request.delete('http://localhost:8080/volunteer/' + ID).then(res => {
     if (res.code === '200') {
       ElMessage.success('操作成功')
       load()  // 刷新表格数据

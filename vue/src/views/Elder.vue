@@ -19,7 +19,6 @@ const state = reactive({
   tableData: [],
   form: {}
 })
-state.form.idOld = true;
 
 const valueHtml = ref('')  // 富文本内容
 
@@ -35,7 +34,8 @@ const valueHtml = ref('')  // 富文本内容
 
 const load = () => {
   request.get('http://localhost:8080/elder').then(res => {
-    state.tableData = res.data
+    console.log(res)
+    state.tableData = res
   })
 }
 load()
@@ -43,31 +43,40 @@ load()
 // 保存
 const save = () => {
   ruleFormRef.value.validate(valid => {
-    if (valid) {
-      state.form.content = valueHtml.value;
+    if (valid)
+      state.form.isOld = true
+      // state.form.age = parseInt(state.form.age)
+    console.log(JSON.stringify(state.form))
       request.request({
-        url: 'http://localhost:8080/connect3',
+        url: 'http://localhost:8080/sse/connect3',
         method: 'post',
-        data: JSON.stringify(state.form)
+        data: state.form
       }).then(res => {
-        if(res.code == '200'){
-          ElMessage.success("保存成功")
-          dialogFormVisible.value = false
-          load()  // 刷新表格数据
-          const id = res.data.id
-          //跳转到老人人脸录入的页面
-          let isOld = true;
-          router.push({ name: 'Tracking', params: { id, isOld }})
-        }else{
-          ElMessage.error("保存失败")
+        console.log(res)
+        // if(res.code == '200'){
+
+          // dialogFormVisible.value = false
+          // load()  // 刷新表格数据
+          const id = res
+        if(res == 0){
+          ElMessage.success("输入信息无效")
         }
+        else{
+          ElMessage.success("保存成功")
+          //跳转到老人人脸录入的页
+          let isOld = true
+          router.push({ name: 'Tracking', params: { id, isOld }})
+        }
+
+        // }else{
+        //   ElMessage.error("保存失败")
+        // }
       })
-    }
   })
 }
 
 const reset = () => {
-  name.value = ''
+  // name.value = ''
   load()
 }
 
@@ -104,20 +113,26 @@ const handleEdit = (raw) => {
 }
 
 //查询
-const search = (id) => {
-  request.post('http://localhost:8080/elder/' + id).then(res => {
-    if (res.code === '200') {
-      ElMessage.success('操作成功')
-      state.tableData = res.data
-    } else {
-      ElMessage.error(res.msg)
-    }
+const search = () => {
+  const ID = parseInt(elderid.value)
+  console.log(ID)
+  request.get(`http://localhost:8080/elder/${ID}`).then(res => {
+    // if (res.code === '200') {
+    //   ElMessage.success('操作成功')
+      console.log(res)
+      state.tableData = [res]
+    //   state.tableData = res
+    // } else {
+    //   ElMessage.error(res.msg)
+    // }
   })
 }
 
 // 删除
-const del = (id) => {
-  request.delete('http://localhost:8080/elder/' + id).then(res => {
+const del = () => {
+  const ID = parseInt(elderid.value)
+  console.log(ID)
+  request.delete('http://localhost:8080/elder/' + ID).then(res => {
     if (res.code === '200') {
       ElMessage.success('操作成功')
       load()  // 刷新表格数据

@@ -22,7 +22,7 @@ export default {
 
     if (!!window.EventSource) {
       this.source = new EventSource(
-          "http://localhost:8080/sse/connect/" + userId + "/" + type
+          "http://localhost:8080/sse/connect2/" + userId + "/" + 5
       );
       this.source.addEventListener("message", (e) => {
         this.imgSrc = "data:image/png;base64," + e.data;
